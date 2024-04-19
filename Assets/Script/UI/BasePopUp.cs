@@ -8,6 +8,9 @@ public class BasePopUp : MonoBehaviour
     protected void Awake()
     {
         canvas = GetComponent<Canvas>();
+        onAwke();
+    }
+    protected virtual void onAwke(){
 
     }
     public virtual void ActivatePopUp()
@@ -20,7 +23,7 @@ public class BasePopUp : MonoBehaviour
         canvas.enabled = false;
     }
 
-    public virtual void TackInput()
+    public virtual void TakeInput()
     {
         if (Input.GetKeyUp(KeyCode.Escape))
         {

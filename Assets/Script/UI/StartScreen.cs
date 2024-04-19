@@ -1,33 +1,29 @@
 using UnityEngine;
 using UnityEngine.UI;
 
-public class HomeScreen : BaseScreen
+public class StartScreen : BaseScreen
 {
     [SerializeField] Button _playButton;
-    [SerializeField] Button _computerPlayButton;
 
     private void Start()
     {
 
         _playButton.onClick.AddListener(OnPlay);
-        _computerPlayButton.onClick.AddListener(OnComputerPlay);
     }
      public override void ActivateScreen()
     {
+        AudioManager.instance.PlayInBackGround(SoundName.BG1);
         base.ActivateScreen();
     }
     void OnPlay()
     {
-        UiManager.instance.SwitchScreen(GameScreens.Play);
         AudioManager.instance.Play(SoundName.Button);
-    }
-    void OnComputerPlay()
-    {
-        UiManager.instance.SwitchScreen(GameScreens.ComputerPlay);
-        AudioManager.instance.Play(SoundName.Button);
+
+        UiManager.instance.SwitchScreen(GameScreens.Home);
     }
     void OnExit()
     {
+
         Application.Quit();
     }
 }

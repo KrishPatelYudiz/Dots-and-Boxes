@@ -2,8 +2,10 @@ using System.Collections.Generic;
 using UnityEngine;
 public enum GameScreens
 {
+    Start,
     Play,
-    Home
+    Home,
+    ComputerPlay
 }
 public enum GamePopUp
 {
@@ -29,12 +31,12 @@ public class UiManager : MonoBehaviour
         if (PopUp.Count != 0)
         {
 
-            PopUp.Peek().TackInput();
+            PopUp.Peek().TakeInput();
         }
 
         else
         {
-            _currentScreen.TackInput();
+            _currentScreen.TakeInput();
 
         }
 

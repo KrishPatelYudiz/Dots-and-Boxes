@@ -1,127 +1,157 @@
-
 using System.Collections;
 using UnityEngine;
 
 public class BoardManager : MonoBehaviour
 {
+    [SerializeField] private BoardGenerator boardGeneratorPrefab;
+    private BoardGenerator boardGenerator;
+    private Box[,] board;
+    private bool[,] boardMap = {
+        {false, false, true, true, false, false},
+        {false, true, true, true, true, false},
+        {true, true, true, true, true, true},
+        {true, true, true, true, true, true},
+        {false, true, true, true, true, false},
+        {false, false, true, true, false, false},
+    };
     
-    bool[,] board_map ={
-        {false,false,true,true,false,false},
-        {false,true,true,true,true,false},
-        {true,true,true,true,true,true},
-        {true,true,true,true,true,true},
-        {false,true,true,true,true,false},
-        {false,false,true,true,false,false},
-    }; 
-    public static BoardManager Instance ;
+    public delegate void TurnChangeEvent();
+    public static event TurnChangeEvent OnTurnChange;
 
-    [SerializeField]BoardGenerator _boardGeneratorPrefab;           
-    BoardGenerator boardGenerator;           
-    Box[,] board;
-    public delegate void OnTurnChange();
-    public static event OnTurnChange onTurnChange;
-    public delegate void OnTackInput(bool State);
-    public static event OnTackInput onTackInput;
+    public delegate void TakeInputEvent(bool state);
+    public static event TakeInputEvent OnTakeInput;
+    public delegate void ComputerInputEvent();
+    public static event ComputerInputEvent OnComputerInput;
 
-    public static void TackInput(bool State){
-        onTackInput?.Invoke(State);
-    }
-   
-    Coroutine tackInput;
+    private Coroutine takeInputCoroutine;
     
-
+    public static BoardManager Instance { get; private set; }
 
     private void Awake() {
         Instance = this;
-        onTackInput+= SetState;
+        OnTakeInput += HandleTakeInputState;
+        OnComputerInput += HandleComputerInputState;
     }
-    void SetState(bool State){
-        if (tackInput != null )
-        {
-            StopCoroutine(tackInput);
-        }
-        if (State)
-        {
-           tackInput = StartCoroutine(TackInput());
-        }
+
+    public static void TriggerTakeInput(bool state) => OnTakeInput?.Invoke(state);
+    public static void TriggerComputerInput() => OnComputerInput?.Invoke();
+    
+    private void HandleTakeInputState(bool state) {
+
+        StopAllCoroutines();
+        
+        if (state)
+            StartCoroutine(HandleTakeInput());
+
     }
-    public void DestroyBoard(){
-        if (boardGenerator != null)
-        {
+    private void HandleComputerInputState() {
+        StopAllCoroutines();
+        StartCoroutine(ComputerInput());
+    }
+
+    public void DestroyBoard() {
+        if (boardGenerator != null) {
             Destroy(boardGenerator.gameObject);
         }
-    }       
-    public void GenerateNewBord(){
+    }
+
+    public void GenerateNewBoard() {
         DestroyBoard();
-        boardGenerator = Instantiate(_boardGeneratorPrefab,transform).GetComponent<BoardGenerator>(); 
-        board =  boardGenerator.MakeNewBoard(board_map);
-        
+        boardGenerator = Instantiate(boardGeneratorPrefab, transform).GetComponent<BoardGenerator>();
+        board = boardGenerator.MakeNewBoard(boardMap);
     }
     
-    IEnumerator TackInput() {
-        while (true)
-        {
-            if (Input.GetMouseButtonDown(0))
-            {
-                RaycastHit2D hit = Physics2D.Raycast(Camera.main.ScreenToWorldPoint(Input.mousePosition), Vector2.zero);
-    
-                if(hit.collider != null)
-                {
-                Line line = hit.collider.gameObject.GetComponent<Line>();
-                    if (line != null)
-                    {
-                        if (line.isSelected == false)
-                        {
-                            line.isSelected = true;
-                            UpdateBox();
-                        }
+    private IEnumerator HandleTakeInput() {
+        while (true) {
+            if (Input.GetMouseButtonDown(0)) {
+                var raycastHit = Physics2D.Raycast(Camera.main.ScreenToWorldPoint(Input.mousePosition), Vector2.zero);
+                if (raycastHit.collider != null) {
+                    var line = raycastHit.collider.gameObject.GetComponent<Line>();
+                    if (line != null && !line.isSelected) {
+                        line.isSelected = true;
+                        AudioManager.instance.Play(SoundName.LineFill);
 
+                        UpdateBoard();
                     }
-                } 
+                }
             }
             yield return null;
         }
     }
-
-    void UpdateBox(){
-        bool isFill = false; 
-        for (int row = 0; row < board.GetLength(0); row++)
+    private IEnumerator ComputerInput() {
+        
+        float time = Random.Range(1.0F,3.0F);
+        while (time > 0)
         {
-            for (int col = 0; col < board.GetLength(0); col++)
-            {
-                if(board[row,col] != null){
-                    if(!board[row,col].isComplite ){
-                        if(board[row,col].ChackComplite())
-                            isFill = true;
-                    }
+            time -= Time.deltaTime;   
+            yield return null;
+        }
+        int dimension = board.GetLength(0);
+        for (int row = 0; row < dimension; row++) {
+            for (int col = 0; col < dimension; col++) {
+                if (board[row, col] != null && !board[row, col].IsComplete) {
+                    board[row, col].FillOneLine();
+                    UpdateBoardForComputer();
+                    yield break;
                 }
-            }   
+            }
+        }
+    }
+    private void UpdateBoard() {
+        bool isFill = false;
+        int dimension = board.GetLength(0);
+        for (int row = 0; row < dimension; row++) {
+            for (int col = 0; col < dimension; col++) {
+                if (board[row, col] != null && !board[row, col].IsComplete && board[row, col].CheckComplete()) {
+                    isFill = true;
+                }
+            }
         }
 
-        if (!isFill){
-            onTurnChange?.Invoke();
+        if (!isFill) {
+            OnTurnChange?.Invoke();
             return;
         }
-        
-        if(CheckForComplet()){
+
+        if (CheckIfBoardIsComplete()) {
             UiManager.instance.OpenPopUp(GamePopUp.GameOver);
-        };
-        
+        }
+    }
+    private void UpdateBoardForComputer() {
+        bool isFill = false;
+        int dimension = board.GetLength(0);
+        for (int row = 0; row < dimension; row++) {
+            for (int col = 0; col < dimension; col++) {
+                if (board[row, col] != null && !board[row, col].IsComplete && board[row, col].CheckComplete()) {
+                    isFill = true;
+                }
+            }
+        }
+
+        if (!isFill) {
+            OnTurnChange?.Invoke();
+            return;
+        }
+
+        if (CheckIfBoardIsComplete()) {
+            UiManager.instance.OpenPopUp(GamePopUp.GameOver);
+            return;
+        }
+        HandleComputerInputState();
+       //! ComputerInput();
     }
 
-
-    bool CheckForComplet(){
-         for (int row = 0; row < board.GetLength(0); row++)
-        {
-            for (int col = 0; col < board.GetLength(0); col++)
-            {
-                if(board[row,col] != null){
-                    if(!board[row,col].isComplite){
-                       return false; 
-                    }
+    private bool CheckIfBoardIsComplete() {
+        int dimension = board.GetLength(0);
+        for (int row = 0; row < dimension; row++) {
+            for (int col = 0; col < dimension; col++) {
+                if (board[row, col] != null && !board[row, col].IsComplete) {
+                    return false;
                 }
-            }   
+            }
         }
         return true;
     }
+    
+
 }

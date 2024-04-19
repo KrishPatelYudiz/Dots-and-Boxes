@@ -35,12 +35,12 @@ public class BoardGenerator : MonoBehaviour
                   GameObject boxObj = Instantiate(_BoxPrefab,transform);
                   boxObj.name = "(" + row + "_" + col +")";
                   Box box = boxObj.GetComponent<Box>();
-                  box.top =  gridLines[row*2,col] ;
-                  box.bottom =  gridLines[2 * row + 2,col]  ;
-                  box.left =  gridLines[2 * row + 1,col]  ;
-                  box.right =  gridLines[2 * row + 1,col +1] ;
+                  box.Top =  gridLines[row*2,col] ;
+                  box.Bottom =  gridLines[2 * row + 2,col]  ;
+                  box.Left =  gridLines[2 * row + 1,col]  ;
+                  box.Right =  gridLines[2 * row + 1,col +1] ;
                    
-                  boxObj.transform.position = new Vector3(box.top.transform.position.x,box.left.transform.position.y);
+                  boxObj.transform.position = new Vector3(box.Top.transform.position.x,box.Left.transform.position.y);
                   
                   board_box[row,col] = box;
                 }

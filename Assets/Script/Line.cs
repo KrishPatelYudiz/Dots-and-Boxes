@@ -14,6 +14,7 @@ public class Line : MonoBehaviour
     set{
         _isSelected = value;
         spriteRenderer.sprite = selectedLineSprite;
+        
     }
     }
 

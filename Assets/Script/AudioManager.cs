@@ -11,14 +11,12 @@ public class AudioData : ScriptableObject
 public enum SoundName
 {
     // Define your sound names here
-    HomeScreenSound,
-    PlayScreenSound,
-    GameOverSound,
-    AttackSound,
-    JumpSound,
-    ButtonSound,
-    HurtSound,
-    DaadSound,
+   BG1,
+   BG2,
+   LineFill,
+   BoxFill,
+   Button,
+   GameOver,
 }
 
 [System.Serializable]
