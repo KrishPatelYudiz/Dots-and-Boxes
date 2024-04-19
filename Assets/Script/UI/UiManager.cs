@@ -2,7 +2,8 @@ using System.Collections.Generic;
 using UnityEngine;
 public enum GameScreens
 {
-    Play
+    Play,
+    Home
 }
 public enum GamePopUp
 {
@@ -63,6 +64,9 @@ public class UiManager : MonoBehaviour
 
         }
     }
-    public void ClosePopUp() => PopUp?.Pop().DeactivatePopUp();
+    public void ClosePopUp() {
+        if (PopUp.Count != 0)
+            PopUp?.Pop().DeactivatePopUp();
+    }
 
 }

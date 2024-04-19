@@ -3,28 +3,16 @@ using UnityEngine.UI;
 
 public class GameOverScreen : BasePopUp
 {
-    [SerializeField] Button _restartButton;
-    [SerializeField] Button _homeButton;
     [SerializeField] Image _winnerIconeImage;
-    private void Start()
-    {
+    [SerializeField] PlayerController playerController;
 
-        _restartButton.onClick.AddListener(OnRestart);
-        _homeButton.onClick.AddListener(OnHome);
-    }
+    public delegate void OnGameOver();
+    public static event OnGameOver onGameOver;
     public override void ActivatePopUp()
     {
-        _winnerIconeImage.sprite =  GameManager.Instance.GetWinner().iconeSprite;
+        _winnerIconeImage.sprite =  playerController.GetWinner().iconeSprite;
+        onGameOver?.Invoke();
         base.ActivatePopUp();
-    }
-    void OnRestart()
-    {
-    }
-    void OnHome()
-    {
-        AudioManager.instance.Play(SoundName.ButtonSound);
-        //UiManager.instance.SwitchScreen(GameScreens.Home);
-
     }
 
 }

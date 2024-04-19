@@ -5,7 +5,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class TwoPlayerScreen : BaseScreen
+public class ComputerPlayerScreen : BaseScreen
 {
     [SerializeField] TMP_Text _player1PointText;
     [SerializeField] TMP_Text _player2PointText;
@@ -85,6 +85,7 @@ public class TwoPlayerScreen : BaseScreen
     }
     void SwitchAnimason(){
         if(playerController.currentPlayerIsPlayer1){
+            
             animator.SetTrigger("Player1");
         }else
         {
@@ -124,7 +125,7 @@ public class TwoPlayerScreen : BaseScreen
             StopCoroutine(timerCoroutine);
         }else
         {
-            BoardManager.TackInput(true);
+            
             _pauseImage.sprite = _pauseIcone;
             SwitchAnimason();
             StopCoroutine(timerCoroutine);
