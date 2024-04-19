@@ -87,6 +87,8 @@ public class TwoPlayerScreen : BaseScreen
 
     private void StopGame()
     {
+        AudioManager.instance.Play(SoundName.Button);
+
         UiManager.instance.ClosePopUp();
         UiManager.instance.SwitchScreen(GameScreens.Home);
     }
@@ -121,6 +123,8 @@ public class TwoPlayerScreen : BaseScreen
 
     private void OnPauseButton()
     {
+        AudioManager.instance.Play(SoundName.Button);
+
         isPaused = !isPaused;
         UpdateState();
     }
@@ -147,6 +151,8 @@ public class TwoPlayerScreen : BaseScreen
     }
     private void RestartGame()
     {
+        AudioManager.instance.Play(SoundName.Button);
+
         playerController.RestartGame();
         StartNewGame();
         UiManager.instance.ClosePopUp();
