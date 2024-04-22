@@ -2,11 +2,6 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-[CreateAssetMenu]
-public class AudioData : ScriptableObject
-{
-    public List<Sound> sounds = new List<Sound>();
-}
 
 public enum SoundName
 {
@@ -39,7 +34,8 @@ public class AudioManager : MonoBehaviour
 
     [SerializeField]
     AudioSource BgAudioSource;
-    public AudioData audioData;
+    public List<Sound> sounds = new List<Sound>();
+
 
     public static AudioManager instance;
 
@@ -112,7 +108,7 @@ public class AudioManager : MonoBehaviour
 
     public void Play(SoundName soundName)
     {
-        Sound sound = audioData.sounds.Find(sound => sound.soundName == soundName);
+        Sound sound = sounds.Find(sound => sound.soundName == soundName);
 
         if (sound == null)
         {
@@ -128,7 +124,7 @@ public class AudioManager : MonoBehaviour
 
     public void PlayInBackGround(SoundName soundName)
     {
-        Sound sound = audioData.sounds.Find(sound => sound.soundName == soundName);
+        Sound sound = sounds.Find(sound => sound.soundName == soundName);
 
         if (sound == null)
         {

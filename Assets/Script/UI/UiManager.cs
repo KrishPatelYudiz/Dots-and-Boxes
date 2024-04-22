@@ -25,22 +25,6 @@ public class UiManager : MonoBehaviour
         instance = this;
         _currentScreen.ActivateScreen();
     }
-
-    private void Update()
-    {
-        if (PopUp.Count != 0)
-        {
-
-            PopUp.Peek().TakeInput();
-        }
-
-        else
-        {
-            _currentScreen.TakeInput();
-
-        }
-
-    }
     public void SwitchScreen(GameScreens screen)
     {
         foreach (BaseScreen baseScreen in _screens)

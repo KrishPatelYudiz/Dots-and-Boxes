@@ -6,6 +6,7 @@ public class BoardManager : MonoBehaviour
     [SerializeField] private BoardGenerator boardGeneratorPrefab;
     private BoardGenerator boardGenerator;
     private Box[,] board;
+    public static int[,] lineData;
     private bool[,] boardMap = {
         {false, false, true, true, false, false},
         {false, true, true, true, true, false},
@@ -22,8 +23,6 @@ public class BoardManager : MonoBehaviour
     public static event TakeInputEvent OnTakeInput;
     public delegate void ComputerInputEvent();
     public static event ComputerInputEvent OnComputerInput;
-
-    private Coroutine takeInputCoroutine;
     
     public static BoardManager Instance { get; private set; }
 
@@ -58,7 +57,7 @@ public class BoardManager : MonoBehaviour
     public void GenerateNewBoard() {
         DestroyBoard();
         boardGenerator = Instantiate(boardGeneratorPrefab, transform).GetComponent<BoardGenerator>();
-        board = boardGenerator.MakeNewBoard(boardMap);
+        board = boardGenerator.MakeNewBoard(boardMap,out lineData);
     }
     
     private IEnumerator HandleTakeInput() {
@@ -91,13 +90,14 @@ public class BoardManager : MonoBehaviour
             for (int col = 0; col < dimension; col++) {
                 if (board[row, col] != null && !board[row, col].IsComplete) {
                     board[row, col].FillOneLine();
+                    AudioManager.instance.Play(SoundName.LineFill);
                     UpdateBoardForComputer();
                     yield break;
                 }
             }
         }
     }
-    private void UpdateBoard() {
+    private bool UpdateBoard() {
         bool isFill = false;
         int dimension = board.GetLength(0);
         for (int row = 0; row < dimension; row++) {
@@ -110,35 +110,21 @@ public class BoardManager : MonoBehaviour
 
         if (!isFill) {
             OnTurnChange?.Invoke();
-            return;
+            return true;
         }
 
         if (CheckIfBoardIsComplete()) {
             UiManager.instance.OpenPopUp(GamePopUp.GameOver);
+            return true;
         }
+        return false;
     }
     private void UpdateBoardForComputer() {
-        bool isFill = false;
-        int dimension = board.GetLength(0);
-        for (int row = 0; row < dimension; row++) {
-            for (int col = 0; col < dimension; col++) {
-                if (board[row, col] != null && !board[row, col].IsComplete && board[row, col].CheckComplete()) {
-                    isFill = true;
-                }
-            }
-        }
-
-        if (!isFill) {
-            OnTurnChange?.Invoke();
-            return;
-        }
-
-        if (CheckIfBoardIsComplete()) {
-            UiManager.instance.OpenPopUp(GamePopUp.GameOver);
-            return;
-        }
+       if (UpdateBoard())
+       {
+        return;
+       }
         HandleComputerInputState();
-       //! ComputerInput();
     }
 
     private bool CheckIfBoardIsComplete() {

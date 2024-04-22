@@ -39,7 +39,7 @@ public class Player
 
     }
     public void ResetTime(){
-        _time = 5;
+        _time = 15;
     }
 
     public void ResetPlayer(){

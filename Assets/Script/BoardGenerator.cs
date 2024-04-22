@@ -16,12 +16,13 @@ public class BoardGenerator : MonoBehaviour
     public Box[,] board_box;
 
 
-    public Box[,] MakeNewBoard(bool[,] board)
+    public Box[,] MakeNewBoard(bool[,] board,out int[,] lineData)
     {
         this.board = board;
         MakeLineTable();
         InitializeBoard();  
         MakeBoxs();
+        lineData = this.lineList; 
         return board_box;
     }
     void MakeBoxs(){
@@ -144,6 +145,8 @@ public class BoardGenerator : MonoBehaviour
                     GameObject line = Instantiate(_linePrefab, transform);
                     line.name = $"({row}, {column})";  
                     gridLines[row,column] = line.GetComponent<Line>();
+                    gridLines[row,column].row = row;
+                    gridLines[row,column].col = column;
                      
                     if (row % 2 == 0)
                     {   
@@ -156,7 +159,6 @@ public class BoardGenerator : MonoBehaviour
                     }
                     if (lineList[row,column] == 1)
                     {
-                        gridLines[row,column]._isSelected = true;
                         line.SetActive(false);
                     }
                 }

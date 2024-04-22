@@ -23,11 +23,5 @@ public class BasePopUp : MonoBehaviour
         canvas.enabled = false;
     }
 
-    public virtual void TakeInput()
-    {
-        if (Input.GetKeyUp(KeyCode.Escape))
-        {
-            UiManager.instance.ClosePopUp();
-        }
-    }
+  
 }
