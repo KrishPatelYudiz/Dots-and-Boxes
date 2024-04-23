@@ -18,11 +18,14 @@ public class Line : MonoBehaviour
         }
         set{
             BoardManager.lineData[row,col] = value? 1 : 0; 
-            spriteRenderer.sprite = selectedLineSprite;
+            FillTheColor();
         }
     }
 
-
+    public void FillTheColor(){
+        spriteRenderer.sprite = selectedLineSprite;
+        
+    }
     private void Awake() {
         spriteRenderer = GetComponent<SpriteRenderer>();
     }

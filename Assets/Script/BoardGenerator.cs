@@ -36,11 +36,7 @@ public class BoardGenerator : MonoBehaviour
                   GameObject boxObj = Instantiate(_BoxPrefab,transform);
                   boxObj.name = "(" + row + "_" + col +")";
                   Box box = boxObj.GetComponent<Box>();
-                  box.Top =  gridLines[row*2,col] ;
-                  box.Bottom =  gridLines[2 * row + 2,col]  ;
-                  box.Left =  gridLines[2 * row + 1,col]  ;
-                  box.Right =  gridLines[2 * row + 1,col +1] ;
-                   
+                    box.Initialize(gridLines[row*2,col] ,gridLines[2 * row + 2,col],gridLines[2 * row + 1,col],gridLines[2 * row + 1,col +1]);
                   boxObj.transform.position = new Vector3(box.Top.transform.position.x,box.Left.transform.position.y);
                   
                   board_box[row,col] = box;
@@ -142,25 +138,26 @@ public class BoardGenerator : MonoBehaviour
             {
                 if (lineList[row,column] > -1)
                 {     
-                    GameObject line = Instantiate(_linePrefab, transform);
-                    line.name = $"({row}, {column})";  
-                    gridLines[row,column] = line.GetComponent<Line>();
-                    gridLines[row,column].row = row;
-                    gridLines[row,column].col = column;
+                    GameObject lineObj = Instantiate(_linePrefab, transform);
+                    lineObj.name = $"({row}, {column})";  
+                    Line line = lineObj.GetComponent<Line>();
+                    gridLines[row,column] = line;
+                    line.row = row;
+                    line.col = column;
                      
                     if (row % 2 == 0)
                     {   
-                        line.transform.localPosition = new Vector3((column * _lineSize) + _lineSize / 2 - HalfBoxSize, -((row / 2) * _lineSize) + HalfBoxSize);
-                        line.transform.localEulerAngles = new Vector3(0, 0, 90);
+                        lineObj.transform.localPosition = new Vector3((column * _lineSize) + _lineSize / 2 - HalfBoxSize, -((row / 2) * _lineSize) + HalfBoxSize);
+                        lineObj.transform.localEulerAngles = new Vector3(0, 0, 90);
                     }
                     else
                     {
-                        line.transform.localPosition = new Vector3((column * _lineSize) - HalfBoxSize, -((row / 2) * _lineSize) - _lineSize / 2 + HalfBoxSize);
+                        lineObj.transform.localPosition = new Vector3((column * _lineSize) - HalfBoxSize, -((row / 2) * _lineSize) - _lineSize / 2 + HalfBoxSize);
                     }
                     if (lineList[row,column] == 1)
                     {
-                        line.SetActive(false);
-                    }
+                        line.FillTheColor();
+                    }   
                 }
         
             }

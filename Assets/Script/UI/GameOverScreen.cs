@@ -5,6 +5,7 @@ public class GameOverScreen : BasePopUp
 {
     [SerializeField] Image _winnerIconeImage;
     [SerializeField] PlayerController playerController;
+    [SerializeField] Button Backbutton;
     Animator animator;
 
     public delegate void OnGameOver();
@@ -12,6 +13,7 @@ public class GameOverScreen : BasePopUp
     protected override void onAwke()
     {
         animator = GetComponent<Animator>();
+        Backbutton.onClick.AddListener(OnBackbutton);
     }
     public override void ActivatePopUp()
     {
@@ -21,5 +23,8 @@ public class GameOverScreen : BasePopUp
         onGameOver?.Invoke();
         base.ActivatePopUp();
     }
-
+    void OnBackbutton(){
+        UiManager.instance.ClosePopUp();
+        UiManager.instance.SwitchScreen(GameScreens.Home);
+    }
 }

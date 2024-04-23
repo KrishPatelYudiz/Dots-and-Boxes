@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "572882055687",
+    "project_id": "dots-boxes-ea141",
+    "storage_bucket": "dots-boxes-ea141.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:572882055687:android:05aaa62fbc1b09792ff0a2",
+        "android_client_info": {
+          "package_name": "com.Krish.DotsAndBoxes"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCXbC9Tw4sqfoDJov5JUbqrYZ7QxMr7ANk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

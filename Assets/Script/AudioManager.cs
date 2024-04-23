@@ -12,6 +12,7 @@ public enum SoundName
    BoxFill,
    Button,
    GameOver,
+   TimeOver,
 }
 
 [System.Serializable]

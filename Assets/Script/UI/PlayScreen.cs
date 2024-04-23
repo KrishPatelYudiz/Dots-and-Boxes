@@ -169,6 +169,7 @@ public class PlayScreen : BaseScreen
             currentPlayer.DecrementTime(Time.deltaTime);
             yield return null;
         }
+        AudioManager.instance.Play(SoundName.TimeOver);
         UpdateLifeLines();
         playerController.ChangePlayer();
     }
